@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bs-primary: #ff0000;
+  --bs-primary-rgb: 255, 0, 0;
+
+  --bs-link-color: #ff0000;
+  --bs-link-hover-color: #cc0000;
+
+  --bs-primary-text-emphasis: #660000;
+  --bs-primary-bg-subtle: #ffe5e5;
+  --bs-primary-border-subtle: #ffb3b3;
+
+  --bs-nav-pills-link-active-color: #fff;
+  --bs-nav-pills-link-active-bg: #ff0000;
+}
+
+.active {
+  background-color: var(--bs-primary) !important;
+  color: var(--bs-nav-pills-link-active-color) !important;
+}
