@@ -1,1 +1,125 @@
-<p>produtos works!</p>
+<div class="container-fluid py-4">
+
+  <!-- Header Superior -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-dark font-weight-bold">Gerenciamento de Produtos</h1>
+    <button class="btn btn-novo d-flex align-items-center gap-2" (click)="abrirModalNovo()">
+      <i class="bi bi-plus-circle-fill"></i> Novo Produto
+    </button>
+  </div>
+
+  <!-- Tabela de Listagem -->
+  <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light text-secondary text-uppercase fs-7">
+          <tr>
+            <th class="px-4 py-3">ID</th>
+            <th class="py-3">Descrição</th>
+            <th class="py-3">Preço Base</th>
+            <th class="py-3">Unidade</th>
+            <th class="py-3">Em Estoque</th>
+            <th class="py-3 text-center">Gere Estoque</th>
+            <th class="px-4 py-3 text-end">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let produto of produtos" class="border-bottom">
+            <td class="px-4 text-secondary font-weight-bold">#{{ produto.id }}</td>
+            <td class="font-weight-bold text-dark">{{ produto.descricao }}</td>
+            <td>{{ produto.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td><span class="badge bg-secondary-subtle text-secondary px-2 py-1">{{ produto.unidade }}</span></td>
+            <td>
+              <span [ngClass]="{'text-danger font-weight-bold': produto.quantidadeEstoque <= 5 && produto.controleEstoque}">
+                {{ produto.quantidadeEstoque }}
+              </span>
+            </td>
+            <td class="text-center">
+              <span class="badge-status" [ngClass]="produto.controleEstoque ? 'badge-sim' : 'badge-nao'">
+                {{ produto.controleEstoque ? 'Sim' : 'Não' }}
+              </span>
+            </td>
+            <td class="px-4 text-end">
+              <div class="d-inline-flex gap-2">
+                <button class="btn btn-icon btn-edit" title="Editar" (click)="abrirModalEditar(produto)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-icon btn-delete" title="Excluir" (click)="deletarProduto(produto.id)">
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="produtos.length === 0">
+            <td colspan="7" class="text-center text-muted py-5">
+              <i class="bi bi-box-seam d-block fs-2 mb-2 text-secondary"></i>
+              Nenhum produto cadastrado até o momento.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal de Cadastro / Edição -->
+  <div class="modal-backdrop-custom" *ngIf="exibindoModal" (click)="fecharModal()"></div>
+  <div class="modal custom-modal-animation" [ngClass]="{'d-block': exibindoModal}" tabindex="-1" *ngIf="exibindoModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-3">
+        <div class="modal-header border-0 bg-light px-4">
+          <h5 class="modal-title font-weight-bold">{{ modoEdicao ? 'Editar Catálogo' : 'Cadastrar Novo Item' }}</h5>
+          <button type="button" class="btn-close" (click)="fecharModal()"></button>
+        </div>
+        <form [formGroup]="produtoForm" (ngSubmit)="salvar()">
+          <div class="modal-body px-4 py-3">
+            
+            <div class="mb-3">
+              <label class="form-label font-weight-bold text-secondary">Descrição do Item</label>
+              <input type="text" class="form-control" formControlName="descricao" placeholder="Ex: Alcatra Premium">
+              <div class="text-danger fs-7 mt-1" *ngIf="produtoForm.get('descricao')?.touched && produtoForm.get('descricao')?.invalid">
+                A descrição do produto é obrigatória.
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label font-weight-bold text-secondary">Preço Venda (R$)</label>
+                <input type="number" step="0.01" class="form-control" formControlName="valor" placeholder="0.00">
+                <div class="text-danger fs-7 mt-1" *ngIf="produtoForm.get('valor')?.touched && produtoForm.get('valor')?.invalid">
+                  Preço inválido ou vazio.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label font-weight-bold text-secondary">Medida Comercial</label>
+                <select class="form-select" formControlName="unidade">
+                  <option value="kg">Quilo (kg)</option>
+                  <option value="un">Unidade (un)</option>
+                  <option value="peça">Peça</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row align-items-center">
+              <div class="col-md-6 mb-3">
+                <label class="form-label font-weight-bold text-secondary">Quantidade Inicial</label>
+                <input type="number" class="form-control" formControlName="quantidadeEstoque">
+              </div>
+              <div class="col-md-6 mb-3 pt-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="controleEstoque" formControlName="controleEstoque">
+                  <label class="form-check-label font-weight-bold text-secondary" for="controleEstoque">Controla Estoque</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer border-0 bg-light px-4">
+            <button type="button" class="btn btn-light" (click)="fecharModal()">Cancelar</button>
+            <button type="submit" class="btn btn-novo px-4">Salvar Alterações</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
