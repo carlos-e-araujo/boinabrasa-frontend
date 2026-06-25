@@ -1,1 +1,113 @@
-<p>usuarios works!</p>
+<div class="container-fluid py-4">
+
+  <!-- Header Superior -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-dark font-weight-bold">Gerenciamento de Usuários</h1>
+    <button class="btn btn-novo d-flex align-items-center gap-2" (click)="abrirModalNovo()">
+      <i class="bi bi-plus-circle-fill"></i> Novo Usuário
+    </button>
+  </div>
+
+  <!-- Tabela de Listagem -->
+  <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light text-secondary text-uppercase fs-7">
+          <tr>
+            <th class="px-4 py-3">ID</th>
+            <th class="py-3">Nome</th>
+            <th class="py-3">Email</th>
+            <th class="py-3">CPF/CNPJ</th>
+            <th class="py-3 text-center">Tipo</th>
+            <th class="px-4 py-3 text-end">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuarios" class="border-bottom">
+            <td class="px-4 text-secondary font-weight-bold">#{{ usuario.id }}</td>
+            <td class="font-weight-bold text-dark">{{ usuario.nome }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.cpfCnpj }}</td>
+            <td class="text-center">
+              <span class="badge-status" [ngClass]="usuario.tipo === 'PF' ? 'badge-sim' : 'badge-nao'">
+                {{ usuario.tipo }}
+              </span>
+            </td>
+            <td class="px-4 text-end">
+              <div class="d-inline-flex gap-2">
+                <button class="btn btn-icon btn-edit" title="Editar" (click)="abrirModalEditar(usuario)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-icon btn-delete" title="Excluir" (click)="deletarUsuario(usuario.id)">
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="usuarios.length === 0">
+            <td colspan="6" class="text-center text-muted py-5">
+              <i class="bi bi-person-x d-block fs-2 mb-2 text-secondary"></i>
+              Nenhum usuário cadastrado até o momento.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal de Cadastro / Edição -->
+  <div class="modal-backdrop-custom" *ngIf="exibindoModal" (click)="fecharModal()"></div>
+  <div class="modal custom-modal-animation" [ngClass]="{'d-block': exibindoModal}" tabindex="-1" *ngIf="exibindoModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-3">
+        <div class="modal-header border-0 bg-light px-4">
+          <h5 class="modal-title font-weight-bold">{{ modoEdicao ? 'Editar Usuário' : 'Cadastrar Novo Usuário' }}</h5>
+          <button type="button" class="btn-close" (click)="fecharModal()"></button>
+        </div>
+        <form [formGroup]="usuarioForm" (ngSubmit)="salvar()">
+          <div class="modal-body px-4 py-3">
+
+            <div class="mb-3">
+              <label class="form-label font-weight-bold text-secondary">Nome</label>
+              <input type="text" class="form-control" formControlName="nome" placeholder="Ex: João da Silva">
+              <div class="text-danger fs-7 mt-1" *ngIf="usuarioForm.get('nome')?.touched && usuarioForm.get('nome')?.invalid">
+                O nome do usuário é obrigatório.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label font-weight-bold text-secondary">Email</label>
+              <input type="email" class="form-control" formControlName="email" placeholder="Ex: joao@email.com">
+              <div class="text-danger fs-7 mt-1" *ngIf="usuarioForm.get('email')?.touched && usuarioForm.get('email')?.invalid">
+                Email inválido ou vazio.
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label font-weight-bold text-secondary">CPF/CNPJ</label>
+                <input type="text" class="form-control" formControlName="cpfCnpj" placeholder="Ex: 000.000.000-00">
+                <div class="text-danger fs-7 mt-1" *ngIf="usuarioForm.get('cpfCnpj')?.touched && usuarioForm.get('cpfCnpj')?.invalid">
+                  CPF/CNPJ é obrigatório.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label font-weight-bold text-secondary">Tipo</label>
+                <select class="form-select" formControlName="tipo">
+                  <option value="PF">Pessoa Física (PF)</option>
+                  <option value="PJ">Pessoa Jurídica (PJ)</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer border-0 bg-light px-4">
+            <button type="button" class="btn btn-light" (click)="fecharModal()">Cancelar</button>
+            <button type="submit" class="btn btn-novo px-4">Salvar Alterações</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
