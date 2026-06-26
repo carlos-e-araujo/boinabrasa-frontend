@@ -3,5 +3,5 @@ export interface Usuario {
   nome: string;
   email: string;
   cpfCnpj: string;
-  tipo: 'PF' | 'PJ';
+  tipo: 'Fornecedor' | 'Cliente' | 'Funcionário' | 'Gerente';
 }

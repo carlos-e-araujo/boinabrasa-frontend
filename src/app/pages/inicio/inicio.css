@@ -1,0 +1,22 @@
+.font-weight-bold { font-weight: 600; }
+.fs-7 { font-size: 0.85rem; }
+
+.icon-box {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.badge-status {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.badge-nao {
+  background-color: #fce8e6;
+  color: #c5221f;
+}

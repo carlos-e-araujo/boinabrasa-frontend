@@ -18,9 +18,9 @@
             <th class="py-3">Nome</th>
             <th class="py-3">Email</th>
             <th class="py-3">CPF/CNPJ</th>
-            <th class="py-3 text-center">Tipo</th>
+            <th class="py-3 text-center">Cargo</th>
             <th class="px-4 py-3 text-end">Ações</th>
-          </tr>
+          </tr> 
         </thead>
         <tbody>
           <tr *ngFor="let usuario of usuarios" class="border-bottom">
@@ -29,7 +29,11 @@
             <td>{{ usuario.email }}</td>
             <td>{{ usuario.cpfCnpj }}</td>
             <td class="text-center">
-              <span class="badge-status" [ngClass]="usuario.tipo === 'PF' ? 'badge-sim' : 'badge-nao'">
+              <span class="badge-status" [ngClass]="{
+                'badge-sim': usuario.tipo === 'Fornecedor',
+                'badge-nao': usuario.tipo === 'Cliente',
+                'badge-neutro': usuario.tipo === 'Funcionário' || usuario.tipo === 'Gerente'
+              }">
                 {{ usuario.tipo }}
               </span>
             </td>
@@ -92,10 +96,12 @@
                 </div>
               </div>
               <div class="col-md-6 mb-3">
-                <label class="form-label font-weight-bold text-secondary">Tipo</label>
+                <label class="form-label font-weight-bold text-secondary">Cargo</label>
                 <select class="form-select" formControlName="tipo">
-                  <option value="PF">Pessoa Física (PF)</option>
-                  <option value="PJ">Pessoa Jurídica (PJ)</option>
+                  <option value="Fornecedor">Fornecedor</option>
+                  <option value="Cliente">Cliente</option>
+                  <option value="Funcionário">Funcionário</option>
+                  <option value="Gerente">Gerente</option>
                 </select>
               </div>
             </div>

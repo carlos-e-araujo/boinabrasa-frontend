@@ -28,7 +28,7 @@ export class Usuarios implements OnInit {
       nome: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       cpfCnpj: ['', [Validators.required]],
-      tipo: ['PF', [Validators.required]]
+      tipo: ['Fornecedor', [Validators.required]] // 👈 trocado de 'PF' para 'Fornecedor'
     });
   }
 
@@ -51,7 +51,7 @@ export class Usuarios implements OnInit {
   abrirModalNovo(): void {
     this.modoEdicao = false;
     this.idUsuarioEmEdicao = null;
-    this.usuarioForm.reset({ tipo: 'PF' });
+    this.usuarioForm.reset({ tipo: 'Fornecedor' }); // 👈 trocado de 'PF' para 'Fornecedor'
     this.exibindoModal = true;
   }
 
