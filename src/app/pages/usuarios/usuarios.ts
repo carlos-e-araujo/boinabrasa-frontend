@@ -14,6 +14,8 @@ import { UsuarioService } from './usuarios.service';
 export class Usuarios implements OnInit {
 
   usuarios: Usuario[] = [];
+  usuariosFiltrados: Usuario[] = [];
+  filtroAtual = '';
   usuarioForm: FormGroup;
   exibindoModal = false;
   modoEdicao = false;
@@ -28,7 +30,7 @@ export class Usuarios implements OnInit {
       nome: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       cpfCnpj: ['', [Validators.required]],
-      tipo: ['Fornecedor', [Validators.required]] // 👈 trocado de 'PF' para 'Fornecedor'
+      tipo: ['Fornecedor', [Validators.required]]
     });
   }
 
@@ -42,16 +44,26 @@ export class Usuarios implements OnInit {
     this.usuarioService.listar().subscribe({
       next: (dados) => {
         this.usuarios = [...dados];
+        this.usuariosFiltrados = [...dados];
         this.cdr.detectChanges();
       },
       error: (erro) => console.error('Erro ao carregar usuários', erro)
     });
   }
 
+  filtrar(): void {
+    if (!this.filtroAtual) {
+      this.usuariosFiltrados = [...this.usuarios];
+    } else {
+      this.usuariosFiltrados = this.usuarios.filter(u => u.tipo === this.filtroAtual);
+    }
+    this.cdr.detectChanges();
+  }
+
   abrirModalNovo(): void {
     this.modoEdicao = false;
     this.idUsuarioEmEdicao = null;
-    this.usuarioForm.reset({ tipo: 'Fornecedor' }); // 👈 trocado de 'PF' para 'Fornecedor'
+    this.usuarioForm.reset({ tipo: 'Fornecedor' });
     this.exibindoModal = true;
   }
 

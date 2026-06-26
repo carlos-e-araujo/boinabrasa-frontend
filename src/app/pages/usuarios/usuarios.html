@@ -8,6 +8,18 @@
     </button>
   </div>
 
+  <!-- Filtro por Cargo -->
+  <div class="mb-3 d-flex align-items-center gap-2">
+    <label class="form-label mb-0 font-weight-bold text-secondary">Filtrar por Cargo:</label>
+    <select class="form-select w-auto" [(ngModel)]="filtroAtual" (change)="filtrar()">
+      <option value="">Todos</option>
+      <option value="Fornecedor">Fornecedor</option>
+      <option value="Cliente">Cliente</option>
+      <option value="Funcionário">Funcionário</option>
+      <option value="Gerente">Gerente</option>
+    </select>
+  </div>
+
   <!-- Tabela de Listagem -->
   <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
     <div class="table-responsive">
@@ -20,10 +32,10 @@
             <th class="py-3">CPF/CNPJ</th>
             <th class="py-3 text-center">Cargo</th>
             <th class="px-4 py-3 text-end">Ações</th>
-          </tr> 
+          </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let usuario of usuarios" class="border-bottom">
+          <tr *ngFor="let usuario of usuariosFiltrados" class="border-bottom">
             <td class="px-4 text-secondary font-weight-bold">#{{ usuario.id }}</td>
             <td class="font-weight-bold text-dark">{{ usuario.nome }}</td>
             <td>{{ usuario.email }}</td>
@@ -74,7 +86,8 @@
             <div class="mb-3">
               <label class="form-label font-weight-bold text-secondary">Nome</label>
               <input type="text" class="form-control" formControlName="nome" placeholder="Ex: João da Silva">
-              <div class="text-danger fs-7 mt-1" *ngIf="usuarioForm.get('nome')?.touched && usuarioForm.get('nome')?.invalid">
+              <div class="text-danger fs-7 mt-1"
+                *ngIf="usuarioForm.get('nome')?.touched && usuarioForm.get('nome')?.invalid">
                 O nome do usuário é obrigatório.
               </div>
             </div>
@@ -82,7 +95,8 @@
             <div class="mb-3">
               <label class="form-label font-weight-bold text-secondary">Email</label>
               <input type="email" class="form-control" formControlName="email" placeholder="Ex: joao@email.com">
-              <div class="text-danger fs-7 mt-1" *ngIf="usuarioForm.get('email')?.touched && usuarioForm.get('email')?.invalid">
+              <div class="text-danger fs-7 mt-1"
+                *ngIf="usuarioForm.get('email')?.touched && usuarioForm.get('email')?.invalid">
                 Email inválido ou vazio.
               </div>
             </div>
@@ -91,7 +105,8 @@
               <div class="col-md-6 mb-3">
                 <label class="form-label font-weight-bold text-secondary">CPF/CNPJ</label>
                 <input type="text" class="form-control" formControlName="cpfCnpj" placeholder="Ex: 000.000.000-00">
-                <div class="text-danger fs-7 mt-1" *ngIf="usuarioForm.get('cpfCnpj')?.touched && usuarioForm.get('cpfCnpj')?.invalid">
+                <div class="text-danger fs-7 mt-1"
+                  *ngIf="usuarioForm.get('cpfCnpj')?.touched && usuarioForm.get('cpfCnpj')?.invalid">
                   CPF/CNPJ é obrigatório.
                 </div>
               </div>
