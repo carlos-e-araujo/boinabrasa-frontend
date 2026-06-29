@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 
 export const appRoutes: Routes = [
+    { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+
     {
         path: 'inicio',
         loadComponent: () => import('./pages/inicio/inicio').then(m => m.Inicio)
@@ -8,6 +10,10 @@ export const appRoutes: Routes = [
     {
         path: 'vendas',
         loadComponent: () => import('./pages/vendas/vendas').then(m => m.Vendas)
+    },
+    {
+        path: 'compras',
+        loadComponent: () => import('./pages/compras/compras').then(m => m.Compras)
     },
     {
         path: 'produtos',

@@ -1,0 +1,166 @@
+<div class="container-fluid py-4">
+
+  <div *ngIf="!exibindoNovaCompra">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0 text-dark font-weight-bold">Entrada de Mercadorias (Compras)</h1>
+        <span class="text-muted fs-7">Histórico de compras e abastecimento de estoque</span>
+      </div>
+      <button class="btn btn-compra d-flex align-items-center gap-2" (click)="alternarTelaNovaCompra(true)">
+        <i class="bi bi-truck shadow-sm"></i> Registrar Nova Compra
+      </button>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light text-secondary text-uppercase fs-7">
+            <tr>
+              <th class="px-4 py-3">NOTA ID</th>
+              <th class="py-3">Data da Compra</th>
+              <th class="py-3">Fornecedor</th>
+              <th class="py-3">Produtos Adquiridos</th>
+              <th class="py-3 text-end">Valor Total Nota</th>
+              <th class="px-4 py-3 text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let compra of historicoCompras" class="border-bottom">
+              <td class="px-4 text-secondary font-weight-bold">#{{ compra.id }}</td>
+              <td>{{ compra.dataCompra | date:'dd/MM/yyyy' }}</td>
+              <td class="font-weight-bold text-dark">{{ compra.nomeFornecedor }}</td>
+              <td>
+                <div class="fs-7 text-muted" *ngFor="let item of compra.itens">
+                  • {{ item.quantidade }}x - {{ item.descricaoProduto }} (Custo: {{ item.valor | currency:'BRL' }})
+                </div>
+              </td>
+              <td class="text-end font-weight-bold text-primary fs-6">
+                {{ compra.valorCompra | currency:'BRL':'symbol':'1.2-2' }}
+              </td>
+              <td class="px-4 text-end">
+                <button class="btn btn-icon btn-delete" title="Excluir Registro" (click)="deletarNotaCompra(compra.id)">
+                  <i class="bi bi-trash3-fill"></i> Excluir
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="historicoCompras.length === 0">
+              <td colspan="6" class="text-center text-muted py-5">
+                <i class="bi bi-clipboard-x d-block fs-2 mb-2 text-secondary"></i>
+                Nenhuma nota fiscal de entrada cadastrada.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="exibindoNovaCompra">
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <button class="btn btn-outline-secondary btn-sm rounded-3" (click)="alternarTelaNovaCompra(false)">
+        <i class="bi bi-arrow-left"></i> Voltar
+      </button>
+      <h1 class="h3 mb-0 text-dark font-weight-bold">Lançar Nota Fiscal de Entrada</h1>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-5">
+        
+        <div class="card shadow-sm border-0 rounded-3 p-4 mb-3">
+          <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-journal-text text-primary me-2"></i>Dados Base</h5>
+          <form [formGroup]="compraForm">
+            <div class="mb-3">
+              <label class="form-label text-secondary fs-7 fw-bold">Fornecedor Emitente</label>
+              <select class="form-select" formControlName="idFornecedor">
+                <option value="" disabled selected>Escolha o fornecedor</option>
+                <option *ngFor="let forn of fornecedores" [value]="forn.id">{{ forn.nome }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label text-secondary fs-7 fw-bold">Data de Emissão da Nota</label>
+              <input type="date" class="form-control" formControlName="dataCompra">
+            </div>
+          </form>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-3 p-4">
+          <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-plus-square text-primary me-2"></i>Lançar Item da Nota</h5>
+          <form [formGroup]="insumoForm" (ngSubmit)="adicionarInsumo()">
+            <div class="mb-3">
+              <label class="form-label text-secondary fs-7 fw-bold">Produto Adquirido</label>
+              <select class="form-select" formControlName="idProduto">
+                <option value="" disabled selected>Selecione a carne...</option>
+                <option *ngFor="let p of produtosDisponiveis" [value]="p.id">{{ p.descricao }}</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-6 mb-4">
+                <label class="form-label text-secondary fs-7 fw-bold">Quantidade</label>
+                <input type="number" step="0.001" class="form-control" formControlName="quantidade">
+              </div>
+              <div class="col-6 mb-4">
+                <label class="form-label text-secondary fs-7 fw-bold">Preço de Custo (R$)</label>
+                <input type="number" step="0.01" class="form-control" formControlName="valorCusto" placeholder="0.00">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-compra w-100 py-2 font-weight-bold">
+              <i class="bi bi-plus-lg me-1"></i> Incluir na Nota
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="card shadow-sm border-0 rounded-3 p-4 d-flex flex-column h-100 min-height-pdv">
+          <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-file-earmark-spreadsheet text-primary me-2"></i>Espelho da Nota Fiscal</h5>
+          
+          <div class="flex-grow-1 overflow-auto mb-4" style="max-height: 350px;">
+            <table class="table align-middle">
+              <thead class="table-light fs-7 text-secondary">
+                <tr>
+                  <th>Descrição</th>
+                  <th class="text-center">Quantidade</th>
+                  <th class="text-end">Valor Custo</th>
+                  <th class="text-end">Subtotal</th>
+                  <th class="text-end">Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of carrinhoInsumos; let i = index">
+                  <td class="font-weight-bold text-dark">{{ item.produto.descricao }}</td>
+                  <td class="text-center">{{ item.quantidade }} <small class="text-muted">{{ item.produto.unidade }}</small></td>
+                  <td class="text-end">{{ item.valorCusto | currency:'BRL' }}</td>
+                  <td class="text-end font-weight-bold">{{ item.subtotal | currency:'BRL' }}</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-sm btn-outline-danger border-0" (click)="removerInsumo(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="carrinhoInsumos.length === 0">
+                  <td colspan="5" class="text-center text-muted py-5">
+                    <i class="bi bi-card-list d-block fs-3 mb-2 text-secondary"></i>
+                    Nenhum item lançado na nota fiscal ainda.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="border-top pt-3 bg-light p-3 rounded-3 mt-auto">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="h5 mb-0 font-weight-bold text-secondary">Total da Nota:</span>
+              <span class="h3 mb-0 font-weight-bold text-primary">{{ totalNotaEstoque | currency:'BRL' }}</span>
+            </div>
+            <button class="btn btn-primary btn-lg w-100 font-weight-bold py-3 shadow" (click)="finalizarOrdemCompra()">
+              <i class="bi bi-check-circle-fill me-2"></i> Confirmar Entrada de Estoque
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
