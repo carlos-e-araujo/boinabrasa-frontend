@@ -1,0 +1,5 @@
+.content {
+    height: 100vh;     /* garante que o miolo tenha a altura exata da tela */
+    overflow-y: auto;  /* ativa o scroll vertical exclusivamente aqui dentro */
+    box-sizing: border-box;
+}

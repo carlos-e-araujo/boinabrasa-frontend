@@ -1,1 +1,135 @@
-<p>relatorios works!</p>
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="h3 mb-0 text-dark font-weight-bold">Relatório gerencial</h1>
+        <span class="text-muted fs-7">Análise analítica de performance, produtos e operação do caixa</span>
+    </div>
+
+    <!-- Cards Financeiros Reestruturados -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white border-start border-success border-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted fs-7 text-uppercase font-weight-bold mb-1">Vendas (Receita)</div>
+                        <div class="h4 mb-0 font-weight-bold text-success">{{ totalReceitaVendas | currency:'BRL' }}
+                        </div>
+                    </div>
+                    <div class="icon-circle bg-success-subtle text-success rounded-circle">
+                        <i class="bi bi-cash-coin fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white border-start border-primary border-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted fs-7 text-uppercase font-weight-bold mb-1">Compras (Custo)</div>
+                        <div class="h4 mb-0 font-weight-bold text-primary">{{ totalCustoCompras | currency:'BRL' }}
+                        </div>
+                    </div>
+                    <div class="icon-circle bg-primary-subtle text-primary rounded-circle">
+                        <i class="bi bi-truck fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white border-start border-warning border-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted fs-7 text-uppercase font-weight-bold mb-1">Ticket Médio</div>
+                        <div class="h4 mb-0 font-weight-bold text-warning">{{ ticketMedioVendas | currency:'BRL' }}
+                        </div>
+                    </div>
+                    <div class="icon-circle bg-warning-subtle text-warning rounded-circle">
+                        <i class="bi bi-calculator fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white border-start border-4"
+                [ngClass]="saldoBalancoNet >= 0 ? 'border-chart-green' : 'border-danger'">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted fs-7 text-uppercase font-weight-bold mb-1">Resultado Líquido</div>
+                        <div class="h4 mb-0 font-weight-bold"
+                            [ngClass]="saldoBalancoNet >= 0 ? 'text-chart-green' : 'text-danger'">
+                            {{ saldoBalancoNet | currency:'BRL' }}
+                        </div>
+                    </div>
+                    <div class="icon-circle rounded-circle"
+                        [ngClass]="saldoBalancoNet >= 0 ? 'bg-success-subtle text-chart-green' : 'bg-danger-subtle text-danger'">
+                        <i class="bi fs-5"
+                            [ngClass]="saldoBalancoNet >= 0 ? 'bi-graph-up-arrow' : 'bi-graph-down-arrow'"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO DE GRÁFICOS VISUAIS -->
+   <div class="row g-4 mb-4">
+    
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm rounded-3 p-4 bg-white h-100">
+        <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-person-workspace text-success me-2"></i>Faturamento por funcionário</h5>
+        <div class="d-flex flex-column gap-3 mt-2">
+          <div *ngFor="let func of rankingFuncionarios">
+            <div class="d-flex justify-content-between fs-7 font-weight-bold mb-1">
+              <span class="text-dark">{{ func.nome }} <small class="text-muted">({{ func.quantidade }} vendas)</small></span>
+              <span class="text-success">{{ func.valorTotal | currency:'BRL' }}</span>
+            </div>
+            <div class="progress" style="height: 12px;">
+              <div class="progress-bar bg-success rounded-3" role="progressbar" [style.width.%]="func.porcentagem"></div>
+            </div>
+          </div>
+          <div *ngIf="rankingFuncionarios.length === 0" class="text-center text-muted py-4">Sem dados operacionais lançados.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm rounded-3 p-4 bg-white h-100">
+        <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-bar-chart-fill text-danger me-2"></i>Volume de saída de cortes</h5>
+        <div class="d-flex flex-column gap-3 mt-2">
+          <div *ngFor="let prod of rankingProdutos">
+            <div class="d-flex justify-content-between fs-7 font-weight-bold mb-1">
+              <span class="text-dark">{{ prod.nome }}</span>
+              <span class="text-dark">{{ prod.quantidade }} <small class="text-muted">un/kg vendidos</small></span>
+            </div>
+            <div class="progress" style="height: 12px;">
+              <div class="progress-bar bg-danger rounded-3" role="progressbar" [style.width.%]="prod.porcentagem"></div>
+            </div>
+          </div>
+          <div *ngIf="rankingProdutos.length === 0" class="text-center text-muted py-4">Nenhum corte movimentado no caixa.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-3 p-4 bg-white h-100">
+        <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Concentração de gastos por fornecedor</h5>
+        <div class="d-flex flex-column gap-3 mt-2">
+          <div *ngFor="let forn of rankingFornecedores">
+            <div class="d-flex justify-content-between fs-7 font-weight-bold mb-1">
+              <span class="text-dark">{{ forn.nome }} <small class="text-muted">({{ forn.quantidade }} notas)</small></span>
+              <span class="text-primary">{{ forn.valorTotal | currency:'BRL' }}</span>
+            </div>
+            <div class="progress" style="height: 12px;">
+              <div class="progress-bar bg-primary rounded-3" role="progressbar" [style.width.%]="forn.porcentagem"></div>
+            </div>
+          </div>
+          <div *ngIf="rankingFornecedores.length === 0" class="text-center text-muted py-4">Nenhum suprimento comprado.</div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProdutoService } from '../produtos/produtos.service';
 import { UsuarioService } from '../usuarios/usuarios.service';
+import { VendaService } from '../vendas/vendas.service';
 import { Produto } from '../produtos/produtos.model';
 
 @Component({
@@ -22,6 +23,7 @@ export class Inicio implements OnInit {
   constructor(
     private produtoService: ProdutoService,
     private usuarioService: UsuarioService,
+    private vendaService: VendaService, 
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -48,6 +50,14 @@ export class Inicio implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Erro ao carregar usuários', err)
+    });
+
+    this.vendaService.listar().subscribe({
+      next: (vendas) => {
+        this.totalVendas = vendas.length; 
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Erro ao carregar volume de vendas', err)
     });
   }
 }
