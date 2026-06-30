@@ -1,7 +1,12 @@
-.font-weight-bold { font-weight: 600; }
-.fs-7 { font-size: 0.85rem; }
-.uppercase { letter-spacing: 0.5px; text-transform: uppercase; }
+.font-weight-bold { 
+  font-weight: 600; 
+}
 
+.fs-7 { 
+  font-size: 0.85rem; 
+}
+
+/*   blocos de progresso   */
 .progress {
   background-color: #f0f2f5;
   overflow: hidden;
@@ -13,6 +18,7 @@
   transition: width 0.6s cubic-bezier(0.1, 1, 0.1, 1);
 }
 
+/* cards superiores */
 .icon-circle {
   width: 42px;
   height: 42px;
@@ -22,26 +28,10 @@
   flex-shrink: 0;
 }
 
-.text-chart-green { color: #198754; }
-.border-chart-green { border-color: #198754 !important; }
-
-/* 🍕 ELEMENTOS EXCLUSIVOS DO GRÁFICO PIZZA NATIVO */
-.grafico-pizza-circulo {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  transition: background 0.5s ease;
+.text-chart-green { 
+  color: #198754; 
 }
 
-.quadradinho-legenda {
-  width: 12px;
-  height: 12px;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.legendas-pizza-container {
-  max-height: 180px;
-  overflow-y: auto;
-  padding-right: 4px;
+.border-chart-green { 
+  border-color: #198754 !important; 
 }

@@ -5,14 +5,12 @@ import { CompraService } from '../compras/compras.service';
 import { VendaResponse } from '../vendas/vendas.model';
 import { CompraResponse } from '../compras/compras.model';
 
+// estrutura para os rankings dos graficos
 interface RankingItem {
   nome: string;
   valorTotal: number;
   quantidade: number;
   porcentagem?: number;
-  grauInicio?: number; // angulo inicial da fatia no grafico pizza
-  grauFim?: number;    // angulo final da fatia no grafico pizza
-  corHex?: string;     // cor exclusiva mapeada para o corte
 }
 
 @Component({
@@ -24,26 +22,24 @@ interface RankingItem {
 })
 export class Relatorios implements OnInit {
 
+  // listas de dados q vem da api
   vendasCarregadas: VendaResponse[] = [];
   comprasCarregadas: CompraResponse[] = [];
 
+  // contadores dos cards 
   totalReceitaVendas = 0;
   totalCustoCompras = 0;
   saldoBalancoNet = 0;
   ticketMedioVendas = 0;
 
+  // contadores de volume total
   quantidadeCuponsVenda = 0;
   quantidadeNotasCompra = 0;
 
+  // arrays das listas e barras do template
   rankingFuncionarios: RankingItem[] = [];
   rankingProdutos: RankingItem[] = [];
   rankingFornecedores: RankingItem[] = [];
-  
-  // string de estilo que alimentara o gradiente conico do css da pizza
-  estiloGraficoPizza = 'conic-gradient(#dee2e6 0deg 360deg)';
-
-  // paleta de cores executivas para os cortes de carne
-  private coresPizza = ['#dc3545', '#fd7e14', '#ffc107', '#198754', '#0d6efd', '#6f42c1'];
 
   constructor(
     private vendaService: VendaService,
@@ -52,11 +48,13 @@ export class Relatorios implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // delay de seguranca carregar layout
     setTimeout(() => {
       this.gerarMetricasGerenciais();
     }, 100);
   }
 
+  // dispara a busca em paralelo de vendas e compras
   gerarMetricasGerenciais(): void {
     this.vendaService.listar().subscribe({
       next: (vendas) => {
@@ -69,7 +67,7 @@ export class Relatorios implements OnInit {
         this.processarRankingProdutos();
         this.recalcularSaldoFinal();
       },
-      error: (err) => console.error('erro ao buscar vendas para relatorio', err)
+      error: (err) => console.error('Erro ao buscar vendas para relatório', err)
     });
 
     this.compraService.listar().subscribe({
@@ -81,28 +79,40 @@ export class Relatorios implements OnInit {
         this.processarRankingFornecedores();
         this.recalcularSaldoFinal();
       },
-      error: (err) => console.error('erro ao buscar compras para relatorio', err)
+      error: (err) => console.error('Erro ao buscar compras para relatório', err)
     });
   }
 
+  // calcula a diferenca entre receitas e custos
   recalcularSaldoFinal(): void {
     this.saldoBalancoNet = this.totalReceitaVendas - this.totalCustoCompras;
     this.cdr.detectChanges();
   }
 
+  // calcula o valor medio gasto por venda emitido
   calcularTicketMedio(): void {
-    this.ticketMedioVendas = this.quantidadeCuponsVenda > 0 ? this.totalReceitaVendas / this.quantidadeCuponsVenda : 0;
+    this.ticketMedioVendas = this.quantidadeCuponsVenda > 0 
+      ? this.totalReceitaVendas / this.quantidadeCuponsVenda 
+      : 0;
   }
 
+  // agrupa vendas por funcionario e  percentual do grafico
   processarRankingFuncionarios(): void {
     const mapa = new Map<string, { valor: number, qtd: number }>();
+
     this.vendasCarregadas.forEach(venda => {
       const atual = mapa.get(venda.nomePessoa) || { valor: 0, qtd: 0 };
-      mapa.set(venda.nomePessoa, { valor: atual.valor + venda.valorTotal, qtd: atual.qtd + 1 });
+      mapa.set(venda.nomePessoa, {
+        valor: atual.valor + venda.valorTotal,
+        qtd: atual.qtd + 1
+      });
     });
 
     const resultado: RankingItem[] = [];
-    mapa.forEach((info, nome) => resultado.push({ nome, valorTotal: info.valor, quantidade: info.qtd }));
+    mapa.forEach((info, nome) => {
+      resultado.push({ nome, valorTotal: info.valor, quantidade: info.qtd });
+    });
+
     resultado.sort((a, b) => b.valorTotal - a.valorTotal);
 
     const maiorValor = resultado[0]?.valorTotal || 1;
@@ -112,6 +122,7 @@ export class Relatorios implements OnInit {
     }));
   }
 
+  // quebra os itens dos cupons para somar os cortes mais vendidos em volume
   processarRankingProdutos(): void {
     const mapa = new Map<string, { valor: number, qtd: number }>();
 
@@ -130,10 +141,8 @@ export class Relatorios implements OnInit {
       resultado.push({ nome, valorTotal: info.valor, quantidade: info.qtd });
     });
 
-    // ordena do produto com maior quantidade para o menor
     resultado.sort((a, b) => b.quantidade - a.quantidade);
 
-    // calcula a barra percentual proporcional ao primeiro colocado
     const maiorQtd = resultado[0]?.quantidade || 1;
     this.rankingProdutos = resultado.map(item => ({
       ...item,
@@ -141,15 +150,23 @@ export class Relatorios implements OnInit {
     }));
   }
 
+  // agrupa notas de compras pelo nome do fornecedor 
   processarRankingFornecedores(): void {
     const mapa = new Map<string, { valor: number, qtd: number }>();
+
     this.comprasCarregadas.forEach(compra => {
       const atual = mapa.get(compra.nomeFornecedor) || { valor: 0, qtd: 0 };
-      mapa.set(compra.nomeFornecedor, { valor: atual.valor + compra.valorCompra, qtd: atual.qtd + 1 });
+      mapa.set(compra.nomeFornecedor, {
+        valor: atual.valor + compra.valorCompra,
+        qtd: atual.qtd + 1
+      });
     });
 
     const resultado: RankingItem[] = [];
-    mapa.forEach((info, nome) => resultado.push({ nome, valorTotal: info.valor, quantidade: info.qtd }));
+    mapa.forEach((info, nome) => {
+      resultado.push({ nome, valorTotal: info.valor, quantidade: info.qtd });
+    });
+
     resultado.sort((a, b) => b.valorTotal - a.valorTotal);
 
     const maiorGasto = resultado[0]?.valorTotal || 1;
