@@ -29,6 +29,11 @@ export class Compras implements OnInit {
   produtosDisponiveis: Produto[] = [];
   fornecedores: Usuario[] = [];
 
+  // filtros para a listagem de registros
+  filtroFornecedor: string = '';
+  filtroDataInicio: string = '';
+  filtroDataFim: string = '';
+
   // estado da nota de compra atual
   carrinhoInsumos: ItemInsumo[] = [];
   totalNotaEstoque = 0;
@@ -91,6 +96,22 @@ export class Compras implements OnInit {
         this.fornecedores = dados.filter(u => u.tipo === 'Fornecedor');
         this.cdr.detectChanges();
       }
+    });
+  }
+
+  // calcula as notas de compras filtradas por fornecedor e periodo
+  get comprasFiltradas(): CompraResponse[] {
+    return this.historicoCompras.filter(compra => {
+      if (this.filtroFornecedor && compra.nomeFornecedor !== this.filtroFornecedor) {
+        return false;
+      }
+      if (this.filtroDataInicio && compra.dataCompra < this.filtroDataInicio) {
+        return false;
+      }
+      if (this.filtroDataFim && compra.dataCompra > this.filtroDataFim) {
+        return false;
+      }
+      return true;
     });
   }
 
@@ -181,7 +202,7 @@ export class Compras implements OnInit {
 
     this.compraService.criar(dadosCompra).subscribe({
       next: () => {
-        alert('Entrada de insumos realizada e estoque atualizado com sucesso!');
+        alert('Entrada de insumos realizada e estoque updated com sucesso!');
         this.alternarTelaNovaCompra(false);
         this.carregarDadosCompra();
       },

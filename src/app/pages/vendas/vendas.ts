@@ -29,6 +29,11 @@ export class Vendas implements OnInit {
   produtosDisponiveis: Produto[] = [];
   funcionarios: Usuario[] = [];
 
+  // filtros para a listagem de registros
+  filtroFuncionario: string = '';
+  filtroDataInicio: string = '';
+  filtroDataFim: string = '';
+
   // estado da venda atual
   carrinho: ItemCarrinho[] = [];
   valorTotalCarrinho = 0;
@@ -60,7 +65,7 @@ export class Vendas implements OnInit {
   }
 
   ngOnInit(): void {
-    // delay para garantir inicializacao correta dos dados
+    // delay para garantir inicializacao correta 
     setTimeout(() => {
       this.carregarHistorico();
       this.carregarAuxiliares();
@@ -89,10 +94,27 @@ export class Vendas implements OnInit {
 
     this.usuarioService.listar().subscribe({
       next: (dados) => {
-        // filtra deixando apenas quem opera o caixa
+        // filtra deixando apenas quem opera 
         this.funcionarios = dados.filter(u => u.tipo === 'Funcionário' || u.tipo === 'Gerente');
         this.cdr.detectChanges();
       }
+    });
+  }
+
+  // calcula as vendas filtradas por periodo e funcionario
+  get vendasFiltradas(): VendaResponse[] {
+    return this.historicoVendas.filter(venda => {
+      if (this.filtroFuncionario && venda.nomePessoa !== this.filtroFuncionario) {
+        return false;
+      }
+      const dataVendaStr = venda.data.substring(0, 10);
+      if (this.filtroDataInicio && dataVendaStr < this.filtroDataInicio) {
+        return false;
+      }
+      if (this.filtroDataFim && dataVendaStr > this.filtroDataFim) {
+        return false;
+      }
+      return true;
     });
   }
 

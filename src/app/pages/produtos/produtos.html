@@ -1,6 +1,5 @@
 <div class="container-fluid py-4">
 
-  <!-- Header Superior -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-dark font-weight-bold">Gerenciamento de Produtos</h1>
     <button class="btn btn-novo d-flex align-items-center gap-2" (click)="abrirModalNovo()">
@@ -8,7 +7,10 @@
     </button>
   </div>
 
-  <!-- Tabela de Listagem -->
+  <div class="mb-3" style="max-width: 400px;">
+    <input type="text" class="form-control" placeholder="Buscar produto por descrição..." [(ngModel)]="termoBusca">
+  </div>
+
   <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
@@ -24,7 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let produto of produtos" class="border-bottom">
+          <tr *ngFor="let produto of produtosFiltrados" class="border-bottom">
             <td class="px-4 text-secondary font-weight-bold">#{{ produto.id }}</td>
             <td class="font-weight-bold text-dark">{{ produto.descricao }}</td>
             <td>{{ produto.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
@@ -50,7 +52,7 @@
               </div>
             </td>
           </tr>
-          <tr *ngIf="produtos.length === 0">
+          <tr *ngIf="produtosFiltrados.length === 0">
             <td colspan="7" class="text-center text-muted py-5">
               <i class="bi bi-box-seam d-block fs-2 mb-2 text-secondary"></i>
               Nenhum produto cadastrado até o momento.
@@ -61,7 +63,6 @@
     </div>
   </div>
 
-  <!-- Modal de Cadastro / Edição -->
   <div class="modal-backdrop-custom" *ngIf="exibindoModal" (click)="fecharModal()"></div>
   <div class="modal custom-modal-animation" [ngClass]="{'d-block': exibindoModal}" tabindex="-1" *ngIf="exibindoModal">
     <div class="modal-dialog modal-dialog-centered">

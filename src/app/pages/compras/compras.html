@@ -11,6 +11,32 @@
       </button>
     </div>
 
+    <!-- Bloco de Filtros Combinados Integrado (Fornecedor + Período de Datas) -->
+    <div class="card shadow-sm border-0 p-3 mb-4 bg-light rounded-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label font-weight-bold text-secondary fs-7">Fornecedor Emitente:</label>
+          <select class="form-select text-dark font-weight-bold" [(ngModel)]="filtroFornecedor">
+            <option value="">Todos os Fornecedores</option>
+            <option *ngFor="let forn of fornecedores" [value]="forn.nome">{{ forn.nome }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label font-weight-bold text-secondary fs-7">De (Data Início):</label>
+          <input type="date" class="form-control" [(ngModel)]="filtroDataInicio">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label font-weight-bold text-secondary fs-7">Até (Data Fim):</label>
+          <input type="date" class="form-control" [(ngModel)]="filtroDataFim">
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-outline-secondary w-100 font-weight-bold" (click)="filtroFornecedor=''; filtroDataInicio=''; filtroDataFim=''">
+            Limpar
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -25,7 +51,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let compra of historicoCompras" class="border-bottom">
+            <!-- Mudança: Loop configurado para iterar sobre comprasFiltradas -->
+            <tr *ngFor="let compra of comprasFiltradas" class="border-bottom">
               <td class="px-4 text-secondary font-weight-bold">#{{ compra.id }}</td>
               <td>{{ compra.dataCompra | date:'dd/MM/yyyy' }}</td>
               <td class="font-weight-bold text-dark">{{ compra.nomeFornecedor }}</td>
@@ -43,10 +70,10 @@
                 </button>
               </td>
             </tr>
-            <tr *ngIf="historicoCompras.length === 0">
+            <tr *ngIf="comprasFiltradas.length === 0">
               <td colspan="6" class="text-center text-muted py-5">
                 <i class="bi bi-clipboard-x d-block fs-2 mb-2 text-secondary"></i>
-                Nenhuma nota fiscal de entrada cadastrada.
+                Nenhuma nota fiscal de entrada corresponde aos filtros aplicados.
               </td>
             </tr>
           </tbody>

@@ -19,6 +19,9 @@ export class Produtos implements OnInit {
   modoEdicao = false;
   idProdutoEmEdicao: number | null = null;
 
+  // guarda o termo digitado na barra de pesquisa rapida
+  termoBusca: string = '';
+
   constructor(
     private produtoService: ProdutoService,
     private fb: FormBuilder,
@@ -48,6 +51,16 @@ export class Produtos implements OnInit {
       },
       error: (erro) => console.error('Erro ao carregar produtos', erro)
     });
+  }
+
+  // calcula a lista filtrada em tempo real pela descricao
+  get produtosFiltrados(): Produto[] {
+    if (!this.termoBusca.trim()) {
+      return this.produtos;
+    }
+    return this.produtos.filter(p => 
+      p.descricao.toLowerCase().includes(this.termoBusca.toLowerCase())
+    );
   }
 
   abrirModalNovo(): void {

@@ -11,6 +11,31 @@
       </button>
     </div>
 
+    <div class="card shadow-sm border-0 p-3 mb-4 bg-light rounded-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label font-weight-bold text-secondary fs-7">Operador do Caixa:</label>
+          <select class="form-select text-dark font-weight-bold" [(ngModel)]="filtroFuncionario">
+            <option value="">Todos os Funcionários</option>
+            <option *ngFor="let f of funcionarios" [value]="f.nome">{{ f.nome }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label font-weight-bold text-secondary fs-7">De (Data Início):</label>
+          <input type="date" class="form-control" [(ngModel)]="filtroDataInicio">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label font-weight-bold text-secondary fs-7">Até (Data Fim):</label>
+          <input type="date" class="form-control" [(ngModel)]="filtroDataFim">
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-outline-secondary w-100 font-weight-bold" (click)="filtroFuncionario=''; filtroDataInicio=''; filtroDataFim=''">
+            Limpar
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -24,7 +49,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let venda of historicoVendas" class="border-bottom">
+            <tr *ngFor="let venda of vendasFiltradas" class="border-bottom">
               <td class="px-4 text-secondary font-weight-bold">#{{ venda.id }}</td>
               <td>{{ venda.data | date:'dd/MM/yyyy HH:mm' }}</td>
               <td class="font-weight-bold text-dark">{{ venda.nomePessoa }}</td>
@@ -37,10 +62,10 @@
                 {{ venda.valorTotal | currency:'BRL':'symbol':'1.2-2' }}
               </td>
             </tr>
-            <tr *ngIf="historicoVendas.length === 0">
+            <tr *ngIf="vendasFiltradas.length === 0">
               <td colspan="5" class="text-center text-muted py-5">
                 <i class="bi bi-receipt-cutoff d-block fs-2 mb-2 text-secondary"></i>
-                Nenhuma venda registrada hoje.
+                Nenhuma venda corresponde aos filtros aplicados.
               </td>
             </tr>
           </tbody>
