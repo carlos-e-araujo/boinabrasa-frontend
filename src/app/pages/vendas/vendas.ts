@@ -95,7 +95,7 @@ export class Vendas implements OnInit {
     this.usuarioService.listar().subscribe({
       next: (dados) => {
         // filtra deixando apenas quem opera o caixa
-        this.funcionarios = dados.filter(u => u.tipo === 'Funcionário' || u.tipo === 'Gerente');
+        this.funcionarios = dados.filter(u => u.tipo === 'Atendente' || u.tipo === 'Acougueiro' || u.tipo === 'Gerente');
         this.cdr.detectChanges();
       }
     });

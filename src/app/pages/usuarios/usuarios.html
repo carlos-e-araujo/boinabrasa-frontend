@@ -13,10 +13,10 @@
     <label class="form-label mb-0 font-weight-bold text-secondary">Filtrar por Cargo:</label>
     <select class="form-select w-auto" [(ngModel)]="filtroAtual" (change)="filtrar()">
       <option value="">Todos</option>
-      <option value="Fornecedor">Fornecedor</option>
-      <option value="Cliente">Cliente</option>
-      <option value="Funcionário">Funcionário</option>
       <option value="Gerente">Gerente</option>
+      <option value="Acougueiro">Açougueiro</option>
+      <option value="Atendente">Atendente</option>
+      <option value="Fornecedor">Fornecedor</option>
     </select>
   </div>
 
@@ -42,9 +42,9 @@
             <td>{{ usuario.cpfCnpj }}</td>
             <td class="text-center">
               <span class="badge-status" [ngClass]="{
-                'badge-sim': usuario.tipo === 'Fornecedor',
-                'badge-nao': usuario.tipo === 'Cliente',
-                'badge-neutro': usuario.tipo === 'Funcionário' || usuario.tipo === 'Gerente'
+                'badge-sim': usuario.tipo === 'Gerente' || usuario.tipo === 'Fornecedor',
+                'badge-nao': usuario.tipo === 'Acougueiro',
+                'badge-neutro': usuario.tipo === 'Atendente'
               }">
                 {{ usuario.tipo }}
               </span>
@@ -113,10 +113,10 @@
               <div class="col-md-6 mb-3">
                 <label class="form-label font-weight-bold text-secondary">Cargo</label>
                 <select class="form-select" formControlName="tipo">
-                  <option value="Fornecedor">Fornecedor</option>
-                  <option value="Cliente">Cliente</option>
-                  <option value="Funcionário">Funcionário</option>
                   <option value="Gerente">Gerente</option>
+                  <option value="Acougueiro">Açougueiro</option>
+                  <option value="Atendente">Atendente</option>
+                  <option value="Fornecedor">Fornecedor</option>
                 </select>
               </div>
             </div>
