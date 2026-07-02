@@ -1,6 +1,6 @@
 <div class="main vh-100 vw-100 d-flex overflow-hidden">
-    <app-sidebar class="w-25" />
-    <div class="content p-3 w-75">
+    <app-sidebar class="w-25" *ngIf="!isLoginRoute" />
+    <div class="content" [class.w-75]="!isLoginRoute" [class.p-3]="!isLoginRoute" [class.w-100]="isLoginRoute" [class.p-0]="isLoginRoute">
         <router-outlet />
     </div>
 </div>
