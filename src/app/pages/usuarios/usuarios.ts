@@ -30,7 +30,8 @@ export class Usuarios implements OnInit {
       nome: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       cpfCnpj: ['', [Validators.required]],
-      tipo: ['Fornecedor', [Validators.required]]
+      tipo: ['Fornecedor', [Validators.required]],
+      senha: ['']
     });
   }
 
@@ -60,10 +61,23 @@ export class Usuarios implements OnInit {
     this.cdr.detectChanges();
   }
 
+  onTipoChange(): void {
+    const tipo = this.usuarioForm.get('tipo')?.value;
+    const senhaControl = this.usuarioForm.get('senha');
+
+    if (!this.modoEdicao && tipo !== 'Fornecedor') {
+      senhaControl?.setValidators([Validators.required]);
+    } else {
+      senhaControl?.clearValidators();
+    }
+    senhaControl?.updateValueAndValidity();
+  }
+
   abrirModalNovo(): void {
     this.modoEdicao = false;
     this.idUsuarioEmEdicao = null;
     this.usuarioForm.reset({ tipo: 'Fornecedor' });
+    this.onTipoChange();
     this.exibindoModal = true;
   }
 
@@ -71,6 +85,8 @@ export class Usuarios implements OnInit {
     this.modoEdicao = true;
     this.idUsuarioEmEdicao = usuario.id ?? null;
     this.usuarioForm.patchValue(usuario);
+    this.usuarioForm.get('senha')?.setValue('');
+    this.onTipoChange();
     this.exibindoModal = true;
   }
 
@@ -85,23 +101,55 @@ export class Usuarios implements OnInit {
       return;
     }
 
-    const dadosUsuario: Usuario = this.usuarioForm.value;
+    const formValues = this.usuarioForm.value;
+    const dadosPessoa: Usuario = {
+      nome: formValues.nome,
+      email: formValues.email,
+      cpfCnpj: formValues.cpfCnpj,
+      tipo: formValues.tipo
+    };
 
     if (this.modoEdicao && this.idUsuarioEmEdicao !== null) {
-      this.usuarioService.alterar(this.idUsuarioEmEdicao, dadosUsuario).subscribe({
+      this.usuarioService.alterar(this.idUsuarioEmEdicao, dadosPessoa).subscribe({
         next: () => {
-          this.fecharModal();
-          this.carregarUsuarios();
+          const syncData = {
+            login: dadosPessoa.email,
+            senha: formValues.senha || undefined,
+            role: dadosPessoa.tipo.toUpperCase()
+          };
+          this.usuarioService.syncUsuario(this.idUsuarioEmEdicao!, syncData).subscribe({
+            next: () => {
+              this.fecharModal();
+              this.carregarUsuarios();
+            },
+            error: (err) => console.error('Erro ao sincronizar usuário', err)
+          });
         },
         error: (err) => console.error('Erro ao alterar usuário', err)
       });
     } else {
-      this.usuarioService.criar(dadosUsuario).subscribe({
-        next: () => {
-          this.fecharModal();
-          this.carregarUsuarios();
+      this.usuarioService.criar(dadosPessoa).subscribe({
+        next: (pessoaCriada: any) => {
+          if (dadosPessoa.tipo !== 'Fornecedor' && formValues.senha) {
+            const registroUsuario = {
+              login: dadosPessoa.email,
+              senha: formValues.senha,
+              role: dadosPessoa.tipo.toUpperCase(),
+              pessoaId: pessoaCriada.id
+            };
+            this.usuarioService.registrarUsuario(registroUsuario).subscribe({
+              next: () => {
+                this.fecharModal();
+                this.carregarUsuarios();
+              },
+              error: (err) => console.error('Erro ao registrar credenciais de usuário', err)
+            });
+          } else {
+            this.fecharModal();
+            this.carregarUsuarios();
+          }
         },
-        error: (err) => console.error('Erro ao criar usuário', err)
+        error: (err) => console.error('Erro ao criar pessoa', err)
       });
     }
   }

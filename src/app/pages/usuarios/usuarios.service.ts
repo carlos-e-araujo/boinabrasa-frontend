@@ -31,4 +31,12 @@ export class UsuarioService {
   excluir(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.headers });
   }
+
+  registrarUsuario(dados: { login: string, senha: string, role: string, pessoaId: number }): Observable<any> {
+    return this.http.post<any>('http://localhost:8080/auth/register', dados, { headers: this.headers });
+  }
+
+  syncUsuario(pessoaId: number, dados: { login: string, senha?: string, role: string }): Observable<any> {
+    return this.http.put<any>(`http://localhost:8080/auth/sync/${pessoaId}`, dados, { headers: this.headers });
+  }
 }

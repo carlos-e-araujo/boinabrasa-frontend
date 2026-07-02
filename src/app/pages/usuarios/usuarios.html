@@ -112,7 +112,7 @@
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label font-weight-bold text-secondary">Cargo</label>
-                <select class="form-select" formControlName="tipo">
+                <select class="form-select" formControlName="tipo" (change)="onTipoChange()">
                   <option value="Gerente">Gerente</option>
                   <option value="Acougueiro">Açougueiro</option>
                   <option value="Atendente">Atendente</option>
@@ -121,10 +121,20 @@
               </div>
             </div>
 
+            <div class="mb-3" *ngIf="usuarioForm.get('tipo')?.value !== 'Fornecedor'">
+              <label class="form-label font-weight-bold text-secondary">Senha de Acesso</label>
+              <input type="password" class="form-control" formControlName="senha" 
+                [placeholder]="modoEdicao ? 'Deixe em branco para manter a atual' : 'Digite uma senha'">
+              <div class="text-danger fs-7 mt-1"
+                *ngIf="usuarioForm.get('senha')?.touched && usuarioForm.get('senha')?.invalid">
+                Senha é obrigatória para novos usuários deste cargo.
+              </div>
+            </div>
+
           </div>
           <div class="modal-footer border-0 bg-light px-4">
-            <button type="button" class="btn btn-light" (click)="fecharModal()">Cancelar</button>
-            <button type="submit" class="btn btn-novo px-4">Salvar Alterações</button>
+             <button type="button" class="btn btn-light" (click)="fecharModal()">Cancelar</button>
+             <button type="submit" class="btn btn-novo px-4">Salvar Alterações</button>
           </div>
         </form>
       </div>

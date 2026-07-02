@@ -23,9 +23,9 @@ export class Inicio implements OnInit {
   constructor(
     private produtoService: ProdutoService,
     private usuarioService: UsuarioService,
-    private vendaService: VendaService, 
+    private vendaService: VendaService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.ultimaSincronizacao = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -54,7 +54,7 @@ export class Inicio implements OnInit {
 
     this.vendaService.listar().subscribe({
       next: (vendas) => {
-        this.totalVendas = vendas.length; 
+        this.totalVendas = vendas.length;
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Erro ao carregar volume de vendas', err)
