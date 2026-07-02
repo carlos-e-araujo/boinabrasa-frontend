@@ -7,7 +7,7 @@
         <span class="text-muted fs-7">Histórico de cupons emitidos no caixa</span>
       </div>
       <button class="btn btn-venda d-flex align-items-center gap-2" (click)="alternarTelaNovaVenda(true)">
-        <i class="bi bi-cart-plus-fill"></i> Nova Venda 
+        <i class="bi bi-cart-plus-fill"></i> Nova Venda
       </button>
     </div>
 
@@ -29,7 +29,8 @@
           <input type="date" class="form-control" [(ngModel)]="filtroDataFim">
         </div>
         <div class="col-md-2">
-          <button class="btn btn-outline-secondary w-100 font-weight-bold" (click)="filtroFuncionario=''; filtroDataInicio=''; filtroDataFim=''">
+          <button class="btn btn-outline-secondary w-100 font-weight-bold"
+            (click)="filtroFuncionario=''; filtroDataInicio=''; filtroDataFim=''">
             Limpar
           </button>
         </div>
@@ -55,7 +56,8 @@
               <td class="font-weight-bold text-dark">{{ venda.nomePessoa }}</td>
               <td>
                 <div class="fs-7 text-muted" *ngFor="let item of venda.itens">
-                  • {{ item.quantidade }}{{ item.idProduto === 1 || item.idProduto === 2 || item.idProduto === 3 || item.idProduto === 4 || item.idProduto === 5 ? 'kg' : 'un' }} - {{ item.descricaoProduto }}
+                  • {{ item.quantidade }}{{ item.idProduto === 1 || item.idProduto === 2 || item.idProduto === 3 ||
+                  item.idProduto === 4 || item.idProduto === 5 ? 'kg' : 'un' }} - {{ item.descricaoProduto }}
                 </div>
               </td>
               <td class="px-4 text-end font-weight-bold text-success fs-6">
@@ -85,7 +87,8 @@
     <div class="row g-4">
       <div class="col-lg-5">
         <div class="card shadow-sm border-0 rounded-3 p-4 mb-3">
-          <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-person-badge text-danger me-2"></i>Responsável</h5>
+          <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-person-badge text-danger me-2"></i>Responsável
+          </h5>
           <form [formGroup]="vendaForm">
             <div>
               <label class="form-label text-secondary fs-7 fw-bold">Selecione o Funcionário</label>
@@ -98,7 +101,8 @@
         </div>
 
         <div class="card shadow-sm border-0 rounded-3 p-4">
-          <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-box-seam text-danger me-2"></i>Balança / Lançamento</h5>
+          <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-box-seam text-danger me-2"></i>Balança /
+            Lançamento</h5>
           <form [formGroup]="itemForm" (ngSubmit)="adicionarAoCarrinho()">
             <div class="mb-3">
               <label class="form-label text-secondary fs-7 fw-bold">Produto</label>
@@ -127,15 +131,15 @@
 
       <div class="col-lg-7">
         <div class="card shadow-sm border-0 rounded-3 p-4 d-flex flex-column h-100 min-height-pdv">
-          <h5 class="font-weight-bold text-dark mb-3"><i class="bi bi-receipt text-danger me-2"></i>Cupom Atual</h5>
-          
+          <h5 class="font-weight-bold text-danger mb-3"><i class="bi bi-receipt text-danger me-2"></i>Cupom Atual</h5>
+
           <div class="flex-grow-1 overflow-auto mb-4" style="max-height: 350px;">
             <table class="table align-middle">
               <thead class="table-light fs-7 text-secondary">
                 <tr>
                   <th>Item</th>
                   <th class="text-center">Qtd</th>
-                  <th class="text-end">Preço Un.</th>
+                  <th class="text-end">Preço</th>
                   <th class="text-end">Subtotal</th>
                   <th class="text-end">Remover</th>
                 </tr>
@@ -143,8 +147,10 @@
               <tbody>
                 <tr *ngFor="let item of carrinho; let i = index">
                   <td class="font-weight-bold text-dark">{{ item.produto.descricao }}</td>
-                  <td class="text-center">{{ item.quantidade }} <small class="text-muted">{{ item.produto.unidade }}</small></td>
-                  <td class="text-end">{{ item.produto.valor | currency:'BRL' }}</td>
+                  <td class="text-center">{{ item.quantidade }} <small class="text-muted">{{ item.produto.unidade
+                      }}</small></td>
+                  <td class="text-end text-muted">{{ item.produto.valor | currency:'BRL' }}/{{ item.produto.unidade }}
+                  </td>
                   <td class="text-end font-weight-bold">{{ item.subtotal | currency:'BRL' }}</td>
                   <td class="text-end">
                     <button class="btn btn-sm btn-outline-danger border-0" (click)="removerDoCarrinho(i)">

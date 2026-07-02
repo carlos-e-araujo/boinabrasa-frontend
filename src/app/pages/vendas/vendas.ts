@@ -65,7 +65,7 @@ export class Vendas implements OnInit {
   }
 
   ngOnInit(): void {
-    // delay para garantir inicializacao correta 
+    // delay para garantir inicializacao correta dos dados
     setTimeout(() => {
       this.carregarHistorico();
       this.carregarAuxiliares();
@@ -94,14 +94,14 @@ export class Vendas implements OnInit {
 
     this.usuarioService.listar().subscribe({
       next: (dados) => {
-        // filtra deixando apenas quem opera 
+        // filtra deixando apenas quem opera o caixa
         this.funcionarios = dados.filter(u => u.tipo === 'Funcionário' || u.tipo === 'Gerente');
         this.cdr.detectChanges();
       }
     });
   }
 
-  // calcula as vendas filtradas por periodo e funcionario
+  // calcula as vendas filtradas por periodo e operador do caixa
   get vendasFiltradas(): VendaResponse[] {
     return this.historicoVendas.filter(venda => {
       if (this.filtroFuncionario && venda.nomePessoa !== this.filtroFuncionario) {
@@ -118,7 +118,7 @@ export class Vendas implements OnInit {
     });
   }
 
-  // limpa o carrinho e troca a interface visual do modulo
+  // limpa o carrinho e troca a interface   
   alternarTelaNovaVenda(exibir: boolean): void {
     this.exibindoNovaVenda = exibir;
     if (exibir) {
@@ -143,9 +143,16 @@ export class Vendas implements OnInit {
     const produtoObj = this.produtosDisponiveis.find(p => p.id === idProd);
     if (!produtoObj) return;
 
+    //  bloqueia fracionar un ou peca 
+    const un = produtoObj.unidade.toLowerCase();
+    if ((un === 'un' || un === 'peça' || un === 'pc') && qtd % 1 !== 0) {
+      alert(`O produto "${produtoObj.descricao}" é vendido por unidade/peça e não pode ser fracionado!`);
+      return;
+    }
+
     // checagem de estoque no front para itens com controle ativo
     if (produtoObj.controleEstoque && produtoObj.quantidadeEstoque < qtd) {
-      alert(`Estoque insuficiente! Disponível no momento: ${produtoObj.quantidadeEstoque} un.`);
+      alert(`Estoque insuficiente! Disponível no momento: ${produtoObj.quantidadeEstoque} ${produtoObj.unidade}.`);
       return;
     }
 

@@ -202,7 +202,7 @@ export class Compras implements OnInit {
 
     this.compraService.criar(dadosCompra).subscribe({
       next: () => {
-        alert('Entrada de insumos realizada e estoque updated com sucesso!');
+        alert('Entrada de insumos realizada e estoque atualizado com sucesso!');
         this.alternarTelaNovaCompra(false);
         this.carregarDadosCompra();
       },

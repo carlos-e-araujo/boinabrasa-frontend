@@ -102,7 +102,7 @@
           <div *ngFor="let prod of rankingProdutos">
             <div class="d-flex justify-content-between fs-7 font-weight-bold mb-1">
               <span class="text-dark">{{ prod.nome }}</span>
-              <span class="text-dark">{{ prod.quantidade }} <small class="text-muted">un/kg vendidos</small></span>
+              <span class="text-dark">{{ prod.quantidade }} <small class="text-muted">un/kg/peça vendidos</small></span>
             </div>
             <div class="progress" style="height: 12px;">
               <div class="progress-bar bg-danger rounded-3" role="progressbar" [style.width.%]="prod.porcentagem"></div>

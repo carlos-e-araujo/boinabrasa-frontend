@@ -32,7 +32,8 @@
             <td>{{ produto.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
             <td><span class="badge bg-secondary-subtle text-secondary px-2 py-1">{{ produto.unidade }}</span></td>
             <td>
-              <span [ngClass]="{'text-danger font-weight-bold': produto.quantidadeEstoque <= 5 && produto.controleEstoque}">
+              <span
+                [ngClass]="{'text-danger font-weight-bold': produto.quantidadeEstoque <= 5 && produto.controleEstoque}">
                 {{ produto.quantidadeEstoque }}
               </span>
             </td>
@@ -73,11 +74,12 @@
         </div>
         <form [formGroup]="produtoForm" (ngSubmit)="salvar()">
           <div class="modal-body px-4 py-3">
-            
+
             <div class="mb-3">
               <label class="form-label font-weight-bold text-secondary">Descrição do Item</label>
               <input type="text" class="form-control" formControlName="descricao" placeholder="Ex: Alcatra Premium">
-              <div class="text-danger fs-7 mt-1" *ngIf="produtoForm.get('descricao')?.touched && produtoForm.get('descricao')?.invalid">
+              <div class="text-danger fs-7 mt-1"
+                *ngIf="produtoForm.get('descricao')?.touched && produtoForm.get('descricao')?.invalid">
                 A descrição do produto é obrigatória.
               </div>
             </div>
@@ -86,7 +88,8 @@
               <div class="col-md-6 mb-3">
                 <label class="form-label font-weight-bold text-secondary">Preço Venda (R$)</label>
                 <input type="number" step="0.01" class="form-control" formControlName="valor" placeholder="0.00">
-                <div class="text-danger fs-7 mt-1" *ngIf="produtoForm.get('valor')?.touched && produtoForm.get('valor')?.invalid">
+                <div class="text-danger fs-7 mt-1"
+                  *ngIf="produtoForm.get('valor')?.touched && produtoForm.get('valor')?.invalid">
                   Preço inválido ou vazio.
                 </div>
               </div>
@@ -102,13 +105,16 @@
 
             <div class="row align-items-center">
               <div class="col-md-6 mb-3">
-                <label class="form-label font-weight-bold text-secondary">Quantidade Inicial</label>
-                <input type="number" class="form-control" formControlName="quantidadeEstoque">
+                <label class="form-label font-weight-bold text-secondary">Quantidade em Estoque</label>
+                <input *ngIf="modoEdicao" type="number" class="form-control" formControlName="quantidadeEstoque">
+                <input *ngIf="!modoEdicao" type="text" class="form-control" value="0 (Via Compras)" disabled>
               </div>
               <div class="col-md-6 mb-3 pt-3">
                 <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="controleEstoque" formControlName="controleEstoque">
-                  <label class="form-check-label font-weight-bold text-secondary" for="controleEstoque">Controla Estoque</label>
+                  <input class="form-check-input" type="checkbox" id="controleEstoque"
+                    formControlName="controleEstoque">
+                  <label class="form-check-label font-weight-bold text-secondary" for="controleEstoque">Controla
+                    Estoque</label>
                 </div>
               </div>
             </div>
